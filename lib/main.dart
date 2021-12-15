@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         /*home: TakePictureScreen(
         camera: firstCamera,
       ),*/
-        home: HomePage(
+        home: MyLoginPage(
           title: 'metalite',
         ));
   }
