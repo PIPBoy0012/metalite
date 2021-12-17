@@ -2,9 +2,10 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'posts.dart';
+import 'feed.dart';
 import 'package:camera/camera.dart';
 import 'main.dart';
+import 'feed.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key, required this.title}) : super(key: key);
@@ -40,8 +41,10 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               title: const Text('Posts'),
               onTap: () {
-                Navigator.pop(context);
-              },
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => Feedpage(),
+                ));
+              }
             ),
             ListTile(
               title: const Text('Create Post'),

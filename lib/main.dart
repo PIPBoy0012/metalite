@@ -8,7 +8,7 @@ import 'login_page.dart';
 import 'dart:async';
 import 'package:camera/camera.dart';
 import 'dart:io';
-import 'posts.dart';
+import 'feed.dart';
 
 /*void main() => runApp(MyApp());
 
