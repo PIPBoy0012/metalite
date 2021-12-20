@@ -1,10 +1,11 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, unused_local_variable
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'home_page.dart';
 import 'models/userModel.dart';
 import 'package:http/http.dart' as http;
+import 'login_page.dart';
 
 class MyRegisterPage extends StatefulWidget {
   MyRegisterPage({Key? key, required this.title}) : super(key: key);
@@ -17,23 +18,27 @@ class MyRegisterPage extends StatefulWidget {
 
 Future<UserModel> createUser(
     String username, String password, String email) async {
-  final String apiUrl = "http://localhost:5000/user";
+  final String apiUrl = "http://10.0.2.2:5000/user";
 
   final response = await http.post(Uri.parse(apiUrl),
-      body: {"username": username, "email": email, "password": password});
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'username': username,
+        'password': password,
+        'email': email
+      }));
 
   if (response.statusCode == 200) {
-    final String responseString = response.body;
-
-    return userModelFromJson(responseString);
+    return UserModel.fromJson(json.decode(response.body as String));
   } else {
-    throw Exception('failed to create user');
+    throw Exception('failed to create user ' + response.statusCode.toString());
   }
 }
 
 class _MyRegisterPageState extends State<MyRegisterPage> {
   get title => widget.title;
-  late UserModel _user;
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
@@ -69,7 +74,6 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
               padding: EdgeInsets.only(left: 50, right: 50, bottom: 10),
               child: TextFormField(
                 controller: _usernameController,
-                obscureText: true,
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 18,
@@ -105,10 +109,6 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                   ),
                 ),
               )),
-          _user == null
-              ? Container()
-              : Text(
-                  "The user ${_user.username}, ${_user.email} is created successfully at time ${_user.createdAt.toIso8601String()}"),
           Container(
             width: MediaQuery.of(context).size.width / 1.3,
             height: 50,
@@ -117,21 +117,62 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                 color: Colors.amberAccent),
             child: MaterialButton(
               onPressed: () async {
-                final int UserId = 1;
-                final String Email = _emailController.text;
-                final String Username = _usernameController.text;
-                final String Password = _passwordController.text;
+                final String email = _emailController.text;
+                final String username = _usernameController.text;
+                final String password = _passwordController.text;
 
                 print('Email: ' + _emailController.text);
                 print('Username: ' + _usernameController.text);
                 print('Password: ' + _passwordController.text);
 
-                final UserModel user =
-                    await createUser(Email, Username, Password);
+                if (email.isEmpty || username.isEmpty || password.isEmpty) {
+                  Widget okButton = TextButton(
+                    child: Text("OK"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  );
 
-                setState(() {
-                  _user = user;
-                });
+                  AlertDialog alert = AlertDialog(
+                    title: Text("Error"),
+                    content: Text("You need to enter data in the fields"),
+                    actions: [okButton],
+                  );
+
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return alert;
+                      });
+                } else {
+                  Widget okButton = TextButton(
+                    child: Text("OK"),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyLoginPage(
+                            title: title,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+
+                  AlertDialog alert = AlertDialog(
+                    title: Text("Success"),
+                    content: Text("User has been Created"),
+                    actions: [okButton],
+                  );
+
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return alert;
+                      });
+                  final UserModel user =
+                      await createUser(username, password, email);
+                }
               },
               child: Text('Register'),
             ),
