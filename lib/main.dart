@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:metalite/home_page.dart';
+import 'posts.dart';
 
 import 'login_page.dart';
 import 'dart:async';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyLoginPage(
-        title: 'MetaLite',
+        title: "MetaLite",
       ),
     );
   }

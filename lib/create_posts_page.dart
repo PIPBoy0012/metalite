@@ -16,18 +16,9 @@ import 'package:image_picker/image_picker.dart';
   "image": "NewgameIMG"
 */
 
-class CreatePost extends StatefulWidget {
-  CreatePost({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _CreatePostState createState() => _CreatePostState();
-}
-
 Future<PostModel> createPost(
     String title, String describstion, String image) async {
-  final String apiUrl = "http://10.0.2.2:5000/user";
+  final String apiUrl = "http://10.0.2.2:5000/mypost";
   final response = await http.post(Uri.parse(apiUrl),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -45,12 +36,24 @@ Future<PostModel> createPost(
   }
 }
 
+class CreatePost extends StatefulWidget {
+  CreatePost({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _CreatePostState createState() => _CreatePostState();
+}
+
 class _CreatePostState extends State<CreatePost> {
   File? image;
 
-  Future pickImage() async {
+  TextEditingController _describstionController = TextEditingController();
+  TextEditingController _titleController = TextEditingController();
+
+  Future pickImage(ImageSource source) async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
 
       final imageTemporary = File(image.path);
@@ -60,8 +63,6 @@ class _CreatePostState extends State<CreatePost> {
     }
   }
 
-  TextEditingController _describstion = TextEditingController();
-  TextEditingController _title = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,7 +79,7 @@ class _CreatePostState extends State<CreatePost> {
           Padding(
             padding: EdgeInsets.only(left: 50, right: 50, bottom: 10),
             child: TextFormField(
-              controller: _title,
+              controller: _titleController,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 18,
@@ -98,7 +99,7 @@ class _CreatePostState extends State<CreatePost> {
           Padding(
               padding: EdgeInsets.only(left: 50, right: 50, bottom: 10),
               child: TextFormField(
-                controller: _describstion,
+                controller: _describstionController,
                 obscureText: true,
                 style: TextStyle(
                   color: Colors.black,
@@ -123,7 +124,7 @@ class _CreatePostState extends State<CreatePost> {
                 color: Colors.amberAccent),
             child: MaterialButton(
               onPressed: () {
-                pickImage();
+                pickImage(ImageSource.gallery);
               },
               child: Text('Pick image from gallery'),
             ),
@@ -135,7 +136,9 @@ class _CreatePostState extends State<CreatePost> {
                 borderRadius: BorderRadius.circular(30.0),
                 color: Colors.amberAccent),
             child: MaterialButton(
-              onPressed: () {},
+              onPressed: () {
+                pickImage(ImageSource.camera);
+              },
               child: Text('Take picture with camera'),
             ),
           ),
@@ -146,7 +149,14 @@ class _CreatePostState extends State<CreatePost> {
                 borderRadius: BorderRadius.circular(30.0),
                 color: Colors.amberAccent),
             child: MaterialButton(
-              onPressed: () {},
+              onPressed: () async {
+                final String title = _titleController.text;
+                final String describstion = _describstionController.text;
+                final String imagePath;
+
+                final PostModel post =
+                    await createPost(title, describstion, "sahdhasdas");
+              },
               child: Text('Publish Post'),
             ),
           ),

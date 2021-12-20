@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'posts.dart';
 import 'main.dart';
 import 'create_posts_page.dart';
+import 'models/userModel.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key, required this.title}) : super(key: key);

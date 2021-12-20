@@ -7,6 +7,27 @@ import 'models/userModel.dart';
 import 'package:http/http.dart' as http;
 import 'login_page.dart';
 
+Future<UserModel> createUser(
+    String username, String password, String email) async {
+  final response = await http.post(
+    Uri.parse("http://10.0.2.2:5000/user"),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'username': username,
+      'password': password,
+      'email': email,
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    return UserModel.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('failed to create user ' + response.statusCode.toString());
+  }
+}
+
 class MyRegisterPage extends StatefulWidget {
   MyRegisterPage({Key? key, required this.title}) : super(key: key);
 
@@ -14,27 +35,6 @@ class MyRegisterPage extends StatefulWidget {
 
   @override
   _MyRegisterPageState createState() => _MyRegisterPageState();
-}
-
-Future<UserModel> createUser(
-    String username, String password, String email) async {
-  final String apiUrl = "http://10.0.2.2:5000/user";
-
-  final response = await http.post(Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'username': username,
-        'password': password,
-        'email': email
-      }));
-
-  if (response.statusCode == 200) {
-    return UserModel.fromJson(json.decode(response.body as String));
-  } else {
-    throw Exception('failed to create user ' + response.statusCode.toString());
-  }
 }
 
 class _MyRegisterPageState extends State<MyRegisterPage> {
