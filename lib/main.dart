@@ -6,11 +6,12 @@ import 'package:metalite/home_page.dart';
 
 import 'login_page.dart';
 import 'dart:async';
-import 'package:camera/camera.dart';
 import 'dart:io';
 import 'posts.dart';
 
-/*void main() => runApp(MyApp());
+//http://10.0.2.2:5000/user
+
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
@@ -24,36 +25,5 @@ class MyApp extends StatelessWidget {
         title: 'MetaLite',
       ),
     );
-  }
-}*/
-
-Future<void> main() async {
-  // Ensure that plugin services are initialized so that `availableCameras()`
-  // can be called before `runApp()`
-
-  WidgetsFlutterBinding.ensureInitialized();
-
-  //Getting list of cameras
-  final cameras = await availableCameras();
-
-  //Getting the first camera available
-  final firstCamera = cameras.first;
-
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // ignore: recursive_getters
-  get firstCamera => firstCamera;
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData.dark(),
-        /*home: TakePictureScreen(
-        camera: firstCamera,
-      ),*/
-        home: HomePage(
-          title: 'metalite',
-        ));
   }
 }

@@ -3,15 +3,13 @@
 
 import 'package:flutter/material.dart';
 import 'posts.dart';
-import 'package:camera/camera.dart';
 import 'main.dart';
+import 'create_posts_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
-
-  //final cameras = availableCameras();
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -46,7 +44,12 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               title: const Text('Create Post'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CreatePost(
+                              title: "Creating Posts",
+                            )));
               },
             ),
             /*ListTile(
