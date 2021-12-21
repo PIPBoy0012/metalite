@@ -13,11 +13,11 @@ import 'package:http/retry.dart';
 Future<Album> fetchAlbum() async {
   final response = await http
       .get(Uri.parse('http://10.0.2.2:5000/mypost'));
-
+  print('API Response: ' + response.toString());
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
-    return Album.fromJson(jsonDecode(response.body));
+    return Album.fromJson(jsonDecode(response.body[0]));
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
@@ -75,7 +75,7 @@ class FeedPageState extends State<Feedpage>{
               if (snapshot.hasData) {
                 return Text(snapshot.data!.title);
               } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
+                return Text('${snapshot.error}' + ' Test Failed');
               }
 
               // By default, show a loading spinner.
